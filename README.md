@@ -49,3 +49,15 @@ FAIL  tests/unit/actions.spec.js
 
 Let's add a test. In `actions.spec.js` add the following:
 
+//# master:tests/unit/actions.spec.js?fdcb19ae88889c8a7d3ee94ec9de26cc1feba54c
+
+Running this with `npm run test:unit` yields:
+
+FAIL  tests/unit/actions.spec.js
+  ● getPost › makes a request and commits the response
+
+    ReferenceError: actions is not defined
+
+As expected, the tests fails. We haven't even created `getPost` yet, so let's do so in `src/store.js`. We will also export it seperately to the `default export new Vuex.Store`:
+
+

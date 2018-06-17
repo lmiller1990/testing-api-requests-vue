@@ -3,6 +3,12 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+export const actions = {
+  getPost(store) {
+
+  }
+}
+
 export default new Vuex.Store({
   state: {
 
@@ -10,7 +16,5 @@ export default new Vuex.Store({
   mutations: {
 
   },
-  actions: {
-
-  }
+  actions: actions
 })
