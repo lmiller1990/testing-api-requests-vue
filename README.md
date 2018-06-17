@@ -77,7 +77,21 @@ FAIL  tests/unit/actions.spec.js
        6 |
     >  7 |     expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
 
-`store` is not defined. The goal of this test is simply to make the API call, and commit whatever response comes back, so we will we mock `store.commit`, and use Jest's `.toHaveBeenCalledWith` matcher to make sure the response was committed with the correct `mutation` handler. Update the test:
+`store` is not defined. The goal of this test is simply to make the API call, and commit whatever response comes back, so we will we mock `store.commit`, and use Jest's `.toHaveBeenCalledWith` matcher to make sure the response was committed with the correct `mutation` handler. We pass `store` as the first argument to `getPost`, to simulate how `Vuex` passes a reference to the `store` as the first argument to all actions. Update the test:
 
+//# master:tests/unit/actions.spec.js?60129b519c1e0fce49d9be7765a9873878586236
+
+`jest.fn` is just a mock function - it doesn't actually do anything, but records useful data like how many times it was called, and with what arguments. The test now fails with different error:
+
+FAIL  tests/unit/actions.spec.js
+  ● getPost › makes a request and commits the response
+
+    expect(jest.fn()).toHaveBeenCalledWith(expected)
+
+    Expected mock function to have been called with:
+      ["SET_POST", {"userId": 1}]
+    But it was not called.
+
+This is what we want. The test is failing for the right reason - a `SET_POST` mutation should have been committed, but was not. Update `actions.js` to actually make the API call:
 
 
