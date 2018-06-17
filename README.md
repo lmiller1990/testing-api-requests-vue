@@ -92,6 +92,29 @@ FAIL  tests/unit/actions.spec.js
       ["SET_POST", {"userId": 1}]
     But it was not called.
 
-This is what we want. The test is failing for the right reason - a `SET_POST` mutation should have been committed, but was not. Update `actions.js` to actually make the API call:
+This is what we want. The test is failing for the right reason - a `SET_POST` mutation should have been committed, but was not. Update `store.js` to actually make the API call:
+
+//# master:src/store.js?b4564344ecd626d595cc2bf72d01a68c32a1d707
+
+Note we added `async` to the function, we we can use `await` on the axios API call. The test still fails with same error - we also need to prepend the action call in the test with `await`:
+
+//# master:tests/unit/actions.spec.js?b4564344ecd626d595cc2bf72d01a68c32a1d707
+
+Now we have two passing tests, including the default `HelloWorld` spec included in the project:
+
+PASS  tests/unit/actions.spec.js
+PASS  tests/unit/HelloWorld.spec.js
+
+Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.333s, estimated 2s
+Ran all test suites.
+
+This is not ideal, though - we are hitting a real network, which makes the unit test slow and prone to failure. Luckily, Jest let's us mock dependencies, like `axios`, in a number of ways. Let's see how to do so with `jest.mock`.
+
+
+### Mocking Axios
+
 
 
