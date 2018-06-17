@@ -60,4 +60,24 @@ FAIL  tests/unit/actions.spec.js
 
 As expected, the tests fails. We haven't even created `getPost` yet, so let's do so in `src/store.js`. We will also export it seperately to the `default export new Vuex.Store`:
 
+//# master:src/store.js?0d42fceb7791c877d22b61544b0cb2ca7428cc05
+
+Now we can `import { actions }` in the spec:
+
+//# master:tests/unit/actions.spec.js?0d42fceb7791c877d22b61544b0cb2ca7428cc05
+
+This gives us a new error:
+
+FAIL  tests/unit/actions.spec.js
+  ● getPost › makes a request and commits the response
+
+    ReferenceError: store is not defined
+
+       5 |     actions.getPost()
+       6 |
+    >  7 |     expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
+
+`store` is not defined. The goal of this test is simply to make the API call, and commit whatever response comes back, so we will we mock `store.commit`, and use Jest's `.toHaveBeenCalledWith` matcher to make sure the response was committed with the correct `mutation` handler. Update the test:
+
+
 
