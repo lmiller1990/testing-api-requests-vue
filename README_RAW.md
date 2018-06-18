@@ -35,17 +35,19 @@ We will be doing TDD: write the test, watch it fails, and then make it pass.
 
 We will see how to mock `axios` in two situations:
 
-1. An action, which makes an API call
-2. A component which makes an API call in it's `created` hook 
+1. A Vuex action, which makes an API call and commits the result
+2. An e2e test, which displays the result in a UI
 
 Let's start with the action test. Create the test file by running `touch tests/unit/actions.spec.js`. Before writing any code, run the test and watch it fail with `npm run test:unit`:
 
 You should get:
 
+```
 FAIL  tests/unit/actions.spec.js
-  ● Test suite failed to run
+● Test suite failed to run
 
-    Your test suite must contain at least one test.
+  Your test suite must contain at least one test.
+```
 
 Let's add a test. In `actions.spec.js` add the following:
 
@@ -53,10 +55,12 @@ Let's add a test. In `actions.spec.js` add the following:
 
 Running this with `npm run test:unit` yields:
 
+```
 FAIL  tests/unit/actions.spec.js
   ● getPost › makes a request and commits the response
 
-    ReferenceError: actions is not defined
+  ReferenceError: actions is not defined
+```
 
 As expected, the tests fails. We haven't even created `getPost` yet, so let's do so in `src/store.js`. We will also export it seperately to the `default export new Vuex.Store`:
 
@@ -68,14 +72,16 @@ Now we can `import { actions }` in the spec:
 
 This gives us a new error:
 
+```
 FAIL  tests/unit/actions.spec.js
   ● getPost › makes a request and commits the response
 
-    ReferenceError: store is not defined
+  ReferenceError: store is not defined
 
-       5 |     actions.getPost()
-       6 |
-    >  7 |     expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
+     5 |     actions.getPost()
+     6 |
+  >  7 |     expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
+```
 
 `store` is not defined. The goal of this test is simply to make the API call, and commit whatever response comes back, so we will we mock `store.commit`, and use Jest's `.toHaveBeenCalledWith` matcher to make sure the response was committed with the correct `mutation` handler. We pass `store` as the first argument to `getPost`, to simulate how `Vuex` passes a reference to the `store` as the first argument to all actions. Update the test:
 
@@ -83,14 +89,16 @@ FAIL  tests/unit/actions.spec.js
 
 `jest.fn` is just a mock function - it doesn't actually do anything, but records useful data like how many times it was called, and with what arguments. The test now fails with different error:
 
+```
 FAIL  tests/unit/actions.spec.js
   ● getPost › makes a request and commits the response
 
-    expect(jest.fn()).toHaveBeenCalledWith(expected)
+  expect(jest.fn()).toHaveBeenCalledWith(expected)
 
-    Expected mock function to have been called with:
-      ["SET_POST", {"userId": 1}]
-    But it was not called.
+  Expected mock function to have been called with:
+    ["SET_POST", {"userId": 1}]
+  But it was not called.
+```
 
 This is what we want. The test is failing for the right reason - a `SET_POST` mutation should have been committed, but was not. Update `store.js` to actually make the API call:
 
@@ -102,6 +110,7 @@ Note we added `async` to the function, we we can use `await` on the axios API ca
 
 Now we have two passing tests, including the default `HelloWorld` spec included in the project:
 
+```
 PASS  tests/unit/actions.spec.js
 PASS  tests/unit/HelloWorld.spec.js
 
@@ -110,6 +119,7 @@ Tests:       2 passed, 2 total
 Snapshots:   0 total
 Time:        1.333s, estimated 2s
 Ran all test suites.
+```
 
 This is not ideal, though - we are hitting a real network, which makes the unit test slow and prone to failure. Luckily, Jest let's us mock dependencies, like `axios`, in a number of ways. Let's see how to do so with `jest.mock`.
 
@@ -124,6 +134,7 @@ To mock `axios` using an ES6 class mock, all you need to do is call `jest.mock('
 
 Easy. The test still passes, but now we are using a mock axios instead of a real network call. We should watch the test fail again, though, just to be should, so update the mock to return `{ userId: 2 }` instead:
 
+```
  FAIL  tests/unit/actions.spec.js
   ● getPost › makes a request and commits the response
 
@@ -133,8 +144,9 @@ Expected mock function to have been called with:
   {"userId": 1}
 as argument 2, but it was called with
   {"userId": 2}.
+```
 
-Looks good.
+Looks good - the test is failing for the right reason. Revert the test, and let's move on to writing an e2e test.
 
 ### Stubbing Axios in a component lifecycle
 
@@ -163,7 +175,9 @@ We want to `import axios`, and make an API request. The code will be similar to 
 
 Run the application with `npm run serve`. Visiting `localhost:8080` should show the post title on the screen:
 
-> Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+```
+Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+```
 
 Let's update the default test `vue-cli` gave us in `tests/e2e/specs/test.js`:
 
