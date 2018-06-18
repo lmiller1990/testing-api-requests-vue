@@ -49,26 +49,7 @@ FAIL  tests/unit/actions.spec.js
 
 Let's add a test. In `actions.spec.js` add the following:
 
-```js
-import { actions } from '../../src/store'
-
-jest.mock('axios', () => {
-  return {
-    get: () => ({ data: { userId: 1 }})
-  }
-})
-
-
-describe('getPost', () => {
-  it('makes a request and commits the response', async () => {
-    const store = { commit: jest.fn() }
-
-    await actions.getPost(store)
-
-    expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
-  }) 
-})
-```
+//# master:tests/unit/actions.spec.js?fdcb19ae88889c8a7d3ee94ec9de26cc1feba54c
 
 Running this with `npm run test:unit` yields:
 
@@ -79,54 +60,11 @@ FAIL  tests/unit/actions.spec.js
 
 As expected, the tests fails. We haven't even created `getPost` yet, so let's do so in `src/store.js`. We will also export it seperately to the `default export new Vuex.Store`:
 
-```js
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
-
-Vue.use(Vuex)
-
-export const actions = {
-  async getPost(store) {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1') 
-
-    store.commit('SET_POST', { userId: response.data.userId })
-  }
-}
-
-export default new Vuex.Store({
-  state: {
-
-  },
-  mutations: {
-
-  },
-  actions: actions
-})
-```
+//# master:src/store.js?0d42fceb7791c877d22b61544b0cb2ca7428cc05
 
 Now we can `import { actions }` in the spec:
 
-```js
-import { actions } from '../../src/store'
-
-jest.mock('axios', () => {
-  return {
-    get: () => ({ data: { userId: 1 }})
-  }
-})
-
-
-describe('getPost', () => {
-  it('makes a request and commits the response', async () => {
-    const store = { commit: jest.fn() }
-
-    await actions.getPost(store)
-
-    expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
-  }) 
-})
-```
+//# master:tests/unit/actions.spec.js?0d42fceb7791c877d22b61544b0cb2ca7428cc05
 
 This gives us a new error:
 
@@ -141,26 +79,7 @@ FAIL  tests/unit/actions.spec.js
 
 `store` is not defined. The goal of this test is simply to make the API call, and commit whatever response comes back, so we will we mock `store.commit`, and use Jest's `.toHaveBeenCalledWith` matcher to make sure the response was committed with the correct `mutation` handler. We pass `store` as the first argument to `getPost`, to simulate how `Vuex` passes a reference to the `store` as the first argument to all actions. Update the test:
 
-```js
-import { actions } from '../../src/store'
-
-jest.mock('axios', () => {
-  return {
-    get: () => ({ data: { userId: 1 }})
-  }
-})
-
-
-describe('getPost', () => {
-  it('makes a request and commits the response', async () => {
-    const store = { commit: jest.fn() }
-
-    await actions.getPost(store)
-
-    expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
-  }) 
-})
-```
+//# master:tests/unit/actions.spec.js?60129b519c1e0fce49d9be7765a9873878586236
 
 `jest.fn` is just a mock function - it doesn't actually do anything, but records useful data like how many times it was called, and with what arguments. The test now fails with different error:
 
@@ -175,54 +94,11 @@ FAIL  tests/unit/actions.spec.js
 
 This is what we want. The test is failing for the right reason - a `SET_POST` mutation should have been committed, but was not. Update `store.js` to actually make the API call:
 
-```js
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
-
-Vue.use(Vuex)
-
-export const actions = {
-  async getPost(store) {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1') 
-
-    store.commit('SET_POST', { userId: response.data.userId })
-  }
-}
-
-export default new Vuex.Store({
-  state: {
-
-  },
-  mutations: {
-
-  },
-  actions: actions
-})
-```
+//# master:src/store.js?b4564344ecd626d595cc2bf72d01a68c32a1d707
 
 Note we added `async` to the function, we we can use `await` on the axios API call. The test still fails with same error - we also need to prepend the action call in the test with `await`:
 
-```js
-import { actions } from '../../src/store'
-
-jest.mock('axios', () => {
-  return {
-    get: () => ({ data: { userId: 1 }})
-  }
-})
-
-
-describe('getPost', () => {
-  it('makes a request and commits the response', async () => {
-    const store = { commit: jest.fn() }
-
-    await actions.getPost(store)
-
-    expect(store.commit).toHaveBeenCalledWith('SET_POST', { userId: 1 })
-  }) 
-})
-```
+//# master:tests/unit/actions.spec.js?b4564344ecd626d595cc2bf72d01a68c32a1d707
 
 Now we have two passing tests, including the default `HelloWorld` spec included in the project:
 
@@ -244,13 +120,7 @@ Jest provides no less that __four__ different ways to mock classes and modules, 
 
 To mock `axios` using an ES6 class mock, all you need to do is call `jest.mock('axios')` and return a function with the desired implentation (since ES6 classes are really just functions under the hood). In this case, we want a `get` function that returns a `userId: 1` object. Update `actions.spec.js`:
 
-```js
-// ...
-
-jest.mock('axios', () => {
-
-// ...
-```
+//# master:tests/unit/actions.spec.js:3-7?e8318fed65f842eaafbcbe1a1c8cffb0fe673395
 
 Easy. The test still passes, but now we are using a mock axios instead of a real network call. We should watch the test fail again, though, just to be should, so update the mock to return `{ userId: 2 }` instead:
 
@@ -272,65 +142,11 @@ Now we know how to test an action uses `axios` - how about in a component? In pr
 
 Open `src/components/HelloWorld.vue`, and delete all the existing markup - you should be left with this:
 
-```vue
-<template>
-  <div class="hello">
-    Title: {{ post.title }}
-  </div>
-</template>
-
-<script>
-import axios from 'axios'
-export default {
-  name: 'HelloWorld',
-
-  data() {
-    return {
-      post: {}
-    }
-  },
-
-  async created() {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1') 
-    this.post = response.data
-  }
-}
-</script>
-
-<style scoped>
-</style>
-```
+//# master:src/components/HelloWorld.vue?1e06d9203ea431b9cf041d93d4e4593738cd4657
 
 We want to `import axios`, and make an API request. The code will be similar to the code in `getPost`. Lastly, we will render the `title` of the post.
 
-```vue
-<template>
-  <div class="hello">
-    Title: {{ post.title }}
-  </div>
-</template>
-
-<script>
-import axios from 'axios'
-export default {
-  name: 'HelloWorld',
-
-  data() {
-    return {
-      post: {}
-    }
-  },
-
-  async created() {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1') 
-    this.post = response.data
-  }
-}
-</script>
-
-<style scoped>
-</style>
-```
+//# master:src/components/HelloWorld.vue?d11fdc064ee2da0ea2a8ca0a6b74ef225da73781
 
 Run the application with `npm run serve`. Visiting `localhost:8080` should show the post title on the screen:
 
@@ -338,21 +154,7 @@ Run the application with `npm run serve`. Visiting `localhost:8080` should show 
 
 Let's update the default test `vue-cli` gave us in `tests/e2e/specs/test.js`:
 
-```js
-// https://docs.cypress.io/api/introduction/api.html
-
-describe('My First Test', () => {
-  it('Visits the app root url', () => {
-    cy.server()
-    cy.route('https://jsonplaceholder.typicode.com/posts/1', {
-      title: 'This is a stubbed title'
-    })
-
-    cy.visit('/')
-    cy.contains('div', 'This is a stubbed title')
-  })
-})
-```
+//# master:tests/e2e/specs/test.js?bd63849339cccee64ba198ee73cae7010d98599e
 
 Run the test with `npm run e2e`. Cypress has a great interface and is really easy to use. You should see:
 
@@ -373,21 +175,7 @@ It works! However, this test suffers from the original problem we had in the uni
 
 Update the test to use a stubbed response:
 
-```js
-// https://docs.cypress.io/api/introduction/api.html
-
-describe('My First Test', () => {
-  it('Visits the app root url', () => {
-    cy.server()
-    cy.route('https://jsonplaceholder.typicode.com/posts/1', {
-      title: 'This is a stubbed title'
-    })
-
-    cy.visit('/')
-    cy.contains('div', 'This is a stubbed title')
-  })
-})
-```
+//# master:tests/e2e/specs/test.js?dfe92e9462baddfd763cea250eaf1509a2bf2cf3
 
 If you still have the Cypress server running, saving should automatically rerun the specs. Now we have a failure:
 
@@ -408,4 +196,3 @@ Some improvements can be made, an are left an exercise:
 - Write a unit tests for `HelloWorld.vue` that mocks `axios` in the same way as `actions.spec.js`
 
 The source code is available here.
-
