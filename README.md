@@ -114,7 +114,7 @@ Ran all test suites.
 This is not ideal, though - we are hitting a real network, which makes the unit test slow and prone to failure. Luckily, Jest let's us mock dependencies, like `axios`, in a number of ways. Let's see how to do so with `jest.mock`.
 
 
-### Mocking Axios
+### Mocking Axios in the Action spec
 
 Jest provides no less that __four__ different ways to mock classes and modules, In large projects, I use [manual mocks](https://facebook.github.io/jest/docs/en/manual-mocks.html#mocking-user-modules) by creating a `__mocks__` folder on the same level as `node_modules` and exporting a mock axios module, however for the simple example I will use an [ES6 class mock](https://facebook.github.io/jest/docs/en/es6-class-mocks.html#calling-jestmock-jest-docs-en-jest-objecthtml-jestmockmodulename-factory-options-with-the-module-factory-parameter). I think both are fine, and have been tending towards this style as of late. 
 
@@ -135,4 +135,11 @@ Easy. The test still passes, but now we are using a mock axios instead of a real
       {"userId": 2}.
 
 Looks good.
+
+### Mocking Axios in a component lifecycle
+
+Now we know how to test an action uses `axios` - how about in a component? In preparation for writing an e2e using Cypress, let's see an example of a component that makes an API call in its `created` hook.
+
+Open `src/components/HelloWorld.vue`, and delete all the existing markup - you should be left with this:
+
 
