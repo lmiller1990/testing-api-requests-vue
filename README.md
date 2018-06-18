@@ -5,6 +5,8 @@ Almost all single page applications will make many calls to external services. I
 - Unit testing Vuex actions that use axios
 - End to end (e2e) testing using Cypress
 
+The source code for this project is available [here](https://github.com/lmiller1990/testing-api-requests-vue).
+
 We will start at the bottom of the [test pyramid](https://martinfowler.com/bliki/TestPyramid.html) with some unit tests, and finish up with some e2e tests.
 
 ### Setup
@@ -411,5 +413,5 @@ Some improvements can be made, an are left an exercise:
 - Mock `axios` using Jest's [manual mocks](https://facebook.github.io/jest/docs/en/manual-mocks.html), where you create a `__mocks__` folder with a mock implementation of `axios` for use in your unit tests
 - Write a unit tests for `HelloWorld.vue` that mocks `axios` in the same way as `actions.spec.js`
 
-The source code is available here.
+The source code for this project is available [here](https://github.com/lmiller1990/testing-api-requests-vue).
 
