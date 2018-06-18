@@ -142,7 +142,20 @@ Now we know how to test an action uses `axios` - how about in a component? In pr
 
 Open `src/components/HelloWorld.vue`, and delete all the existing markup - you should be left with this:
 
-//# master:src/components/HelloWorld.vue?1e06d9203ea431b9cf041d93d4e4593738cd4657
+```vue
+<template>
+  <div class="hello"></div>
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld'
+}
+</script>
+
+<style scoped>
+</style>
+```
 
 We want to `import axios`, and make an API request. The code will be similar to the code in `getPost`. Lastly, we will render the `title` of the post.
 
