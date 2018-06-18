@@ -136,7 +136,7 @@ Easy. The test still passes, but now we are using a mock axios instead of a real
 
 Looks good.
 
-### Mocking Axios in a component lifecycle
+### Stubbing Axios in a component lifecycle
 
 Now we know how to test an action uses `axios` - how about in a component? In preparation for writing an e2e using Cypress, let's see an example of a component that makes an API call in its `created` hook.
 
@@ -152,4 +152,25 @@ Run the application with `npm run serve`. Visiting `localhost:8080` should show 
 
 > Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
 
+Let's update the default test `vue-cli` gave us in `tests/e2e/specs/test.js`:
 
+//# master:tests/e2e/specs/test.js?bd63849339cccee64ba198ee73cae7010d98599e
+
+Run the test with `npm run e2e`. Cypress has a great interface and is really easy to use. You should see:
+
+SS: cypress-ui
+
+Click 'run'. A Chrome browser should open and if everything went well, you should see:
+
+SS: e2e-passing
+
+It works! However, this test suffers from the original problem we had in the unit test we wrote - it is using a real network call. We want to __stub__ the network call, with a fake one, so we can consistently reproduce the same results without relying on a potentially flakey external API. To stub a response in Cypress, you need to do [two things](https://docs.cypress.io/guides/guides/network-requests.html#Stubbing):
+
+1. Start a `cy.server`
+2. Provide a `cy.route`
+
+`cy.route` takes [several forms](https://docs.cypress.io/api/commands/route.html#Arguments). The one we will use is 
+
+> cy.route(url, response)
+
+Update the test to use a stubbed response:
