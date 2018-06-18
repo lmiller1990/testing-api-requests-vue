@@ -248,6 +248,10 @@ To mock `axios` using an ES6 class mock, all you need to do is call `jest.mock('
 // ...
 
 jest.mock('axios', () => {
+  return {
+    get: () => ({ data: { userId: 1 }})
+  }
+})
 
 // ...
 ```
@@ -257,12 +261,12 @@ Easy. The test still passes, but now we are using a mock axios instead of a real
  FAIL  tests/unit/actions.spec.js
   ● getPost › makes a request and commits the response
 
-    expect(jest.fn()).toHaveBeenCalledWith(expected)
+expect(jest.fn()).toHaveBeenCalledWith(expected)
 
-    Expected mock function to have been called with:
-      {"userId": 1}
-    as argument 2, but it was called with
-      {"userId": 2}.
+Expected mock function to have been called with:
+  {"userId": 1}
+as argument 2, but it was called with
+  {"userId": 2}.
 
 Looks good.
 

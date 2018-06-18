@@ -120,19 +120,19 @@ Jest provides no less that __four__ different ways to mock classes and modules, 
 
 To mock `axios` using an ES6 class mock, all you need to do is call `jest.mock('axios')` and return a function with the desired implentation (since ES6 classes are really just functions under the hood). In this case, we want a `get` function that returns a `userId: 1` object. Update `actions.spec.js`:
 
-//# master:tests/unit/actions.spec.js:3-7?e8318fed65f842eaafbcbe1a1c8cffb0fe673395
+//# master:tests/unit/actions.spec.js:3,4,5,6,7?e8318fed65f842eaafbcbe1a1c8cffb0fe673395
 
 Easy. The test still passes, but now we are using a mock axios instead of a real network call. We should watch the test fail again, though, just to be should, so update the mock to return `{ userId: 2 }` instead:
 
  FAIL  tests/unit/actions.spec.js
   ● getPost › makes a request and commits the response
 
-    expect(jest.fn()).toHaveBeenCalledWith(expected)
+expect(jest.fn()).toHaveBeenCalledWith(expected)
 
-    Expected mock function to have been called with:
-      {"userId": 1}
-    as argument 2, but it was called with
-      {"userId": 2}.
+Expected mock function to have been called with:
+  {"userId": 1}
+as argument 2, but it was called with
+  {"userId": 2}.
 
 Looks good.
 
