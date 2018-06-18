@@ -145,3 +145,11 @@ Open `src/components/HelloWorld.vue`, and delete all the existing markup - you s
 //# master:src/components/HelloWorld.vue?1e06d9203ea431b9cf041d93d4e4593738cd4657
 
 We want to `import axios`, and make an API request. The code will be similar to the code in `getPost`. Lastly, we will render the `title` of the post.
+
+//# master:src/components/HelloWorld.vue?d11fdc064ee2da0ea2a8ca0a6b74ef225da73781
+
+Run the application with `npm run serve`. Visiting `localhost:8080` should show the post title on the screen:
+
+> Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+
+
