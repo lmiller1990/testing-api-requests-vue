@@ -116,5 +116,23 @@ This is not ideal, though - we are hitting a real network, which makes the unit 
 
 ### Mocking Axios
 
+Jest provides no less that __four__ different ways to mock classes and modules, In large projects, I use [manual mocks](https://facebook.github.io/jest/docs/en/manual-mocks.html#mocking-user-modules) by creating a `__mocks__` folder on the same level as `node_modules` and exporting a mock axios module, however for the simple example I will use an [ES6 class mock](https://facebook.github.io/jest/docs/en/es6-class-mocks.html#calling-jestmock-jest-docs-en-jest-objecthtml-jestmockmodulename-factory-options-with-the-module-factory-parameter). I think both are fine, and have been tending towards this style as of late. 
 
+To mock `axios` using an ES6 class mock, all you need to do is call `jest.mock('axios')` and return a function with the desired implentation (since ES6 classes are really just functions under the hood). In this case, we want a `get` function that returns a `userId: 1` object. Update `actions.spec.js`:
+
+//# master:tests/unit/actions.spec.js:3-7?e8318fed65f842eaafbcbe1a1c8cffb0fe673395
+
+Easy. The test still passes, but now we are using a mock axios instead of a real network call. We should watch the test fail again, though, just to be should, so update the mock to return `{ userId: 2 }` instead:
+
+ FAIL  tests/unit/actions.spec.js
+  ● getPost › makes a request and commits the response
+
+    expect(jest.fn()).toHaveBeenCalledWith(expected)
+
+    Expected mock function to have been called with:
+      {"userId": 1}
+    as argument 2, but it was called with
+      {"userId": 2}.
+
+Looks good.
 
