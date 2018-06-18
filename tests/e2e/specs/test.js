@@ -8,6 +8,6 @@ describe('My First Test', () => {
     })
 
     cy.visit('/')
-    cy.contains('div', 'sunt aut facere repellat provident occaecati excepturi optio reprehenderit')
+    cy.contains('div', 'This is a stubbed title')
   })
 })

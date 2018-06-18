@@ -174,3 +174,25 @@ It works! However, this test suffers from the original problem we had in the uni
 > cy.route(url, response)
 
 Update the test to use a stubbed response:
+
+//# master:test/e2e/specs/test.js?dfe92e9462baddfd763cea250eaf1509a2bf2cf3
+
+If you still have the Cypress server running, saving should automatically rerun the specs. Now we have a failure:
+
+SS: e2e-updated
+
+We can see on the right hand side that the stubbed response was rendered! Simply update the spec to assert the stubbed title is rendered and everything should be green again:
+
+SS: e2e-final
+
+### Conclusion and Improvements
+
+We saw how to mock `axios` in a Vuex action spec, and how to stub the response using Cypress. With the advent of tools like Jest and Cypress, testing is extremely simple and actually makes development a lot more smooth one you are in the habit of writing tests. 
+
+Some improvements can be made, an are left an exercise:
+
+- Write some tests using Cypress against a real server, to test critical paths in your application, such as sign up and login. Not stubbing, but against a real server
+- Mock `axios` using Jest's [manual mocks](https://facebook.github.io/jest/docs/en/manual-mocks.html), where you create a `__mocks__` folder with a mock implementation of `axios` for use in your unit tests
+- Write a unit tests for `HelloWorld.vue` that mocks `axios` in the same way as `actions.spec.js`
+
+The source code is available here.
